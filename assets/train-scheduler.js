@@ -20,7 +20,7 @@ $("#submitBtn").on("click", function(event){
     destination = $("#destination").val().trim();
     firstTrain = moment($("#firstTrainTime").val().trim(), "HH:mm").format('X');
     frequency = $("#frequency").val().trim();
-	// console.log (firstTime)
+	// console.log (firstTrain)
     var newTrain = {
 		name: name,
 	    destination: destination,
@@ -28,35 +28,35 @@ $("#submitBtn").on("click", function(event){
 	    frequency: frequency
 	};
 	trainDB.ref().push(newTrain);
-	
+	//reset form fields
 	document.getElementById("AddTrain").reset();
 });
 
-// Retrieve new posts as they are added to our database
+// Retrieve new train info as they are added to the database
+//We also have access to the previous post ID from the second prevChildKey argument (firebase documentation)
 trainDB.ref().on("child_added", function(snapshot, prevChildKey) {
 	var addedTrain = snapshot.val();
-	  console.log(addedTrain)
-	var tName = snapshot.val().name;
-	var tDestination = snapshot.val().destination;
-	var tFrequency = snapshot.val().frequency;
-	var tFirstTrain = snapshot.val().firstTrain;
+	  // console.log(addedTrain)
+	var trainName = snapshot.val().name;
+	var trainDestination = snapshot.val().destination;
+	var trainFrequency = snapshot.val().frequency;
+	var firstTrainTime = snapshot.val().firstTrain;
 
 //Calculate train times
-	// To calculate the minutes till arrival, take the current time in unix subtract the FirstTrain time and find the modulus between the difference and the frequency  
-	var difference = moment().diff(moment.unix(tFirstTrain), "minutes");
-	var tRemainder = moment().diff(moment.unix(tFirstTrain), "minutes") % tFrequency ;
-	var tMinutes = tFrequency - tRemainder;
+// To calculate the minutes to arrival, subtract the FirstTrainTime from the current time, find the modulus between the frequency and compare to the difference 
+	var difference = moment().diff(moment.unix(firstTrainTime), "minutes");
+		console.log("first train" + firstTrainTime);
+		console.log("current time" + moment().unix())
+		console.log("difference" + difference);
+	var remainder = moment().diff(moment.unix(firstTrainTime), "minutes") % trainFrequency ;
+	console.log(remainder)
+	var minutes = trainFrequency - remainder;
 
-	// To calculate the arrival time, add the tMinutes to the currrent time
-	var tArrival = moment().add(tMinutes, "m").format("hh:mm A"); 
-		console.log(difference + " time difference")
-		console.log(tMinutes + " tMinutes");
-		console.log(tRemainder + " tRemainder");
-		console.log(tArrival + " tArrival");
+	// To calculate the arrival time, add minutes to the currrent time
+	var arrival = moment().add(minutes, "m").format("hh:mm A"); 
 		
 	//"Print trainDB to html table"
-$("#currentTrainTable > tbody").append("<tr><td>" + tName + "</td><td>" + tDestination + "</td><td>" + tFrequency + "</td><td>" + tArrival + "</td><td>" + tMinutes + "</td></tr>");
-//
+$("#currentTrainTable > tbody").append("<tr><td>" + trainName + "</td><td>" + trainDestination + "</td><td>" + trainFrequency + "</td><td>" + arrival + "</td><td>" + minutes + "</td></tr>");
 
 
 });
