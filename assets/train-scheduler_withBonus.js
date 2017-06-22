@@ -66,7 +66,7 @@ trainDB.ref().on("child_added", function(snapshot, prevChildKey) {
 
     var removeTrain = $("<button>");
     removeTrain.attr("data-to-remove", itemCount);
-    removeTrain.addClass("btn btn-warning btn-xs");
+    removeTrain.addClass("btn btn-warning btn-xs remove");
     removeTrain.append("X");
 
     var updateTrain = $("<button>");
@@ -82,5 +82,11 @@ trainDB.ref().on("child_added", function(snapshot, prevChildKey) {
 	itemCount++;
 });
 
+$(document.body).on("click", ".remove", function() {
+      // Get the number of the button from its data attribute and hold in a variable called trainNumber.
+      var trainNumber = $(this).attr("data-to-remove");
+      // Select and Remove the specific <tr> element that previously held the train item number.
+      $("#item-" + trainNumber).remove();
+    });
 
 }); //document on ready 
