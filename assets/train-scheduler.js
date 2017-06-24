@@ -27,14 +27,14 @@ $("#submitBtn").on("click", function(event){
 	    firstTrain: firstTrain,
 	    frequency: frequency
 	};
-	trainDB.ref().push(newTrain);
+	trainDB.ref('trains').push(newTrain);
 	//reset form fields
 	document.getElementById("AddTrain").reset();
 });
 
 // Retrieve new train info as they are added to the database
 //We also have access to the previous post ID from the second prevChildKey argument (firebase documentation)
-trainDB.ref().on("child_added", function(snapshot, prevChildKey) {
+trainDB.ref('trains').on("child_added", function(snapshot, prevChildKey) {
 	var addedTrain = snapshot.val();
 	  // console.log(addedTrain)
 	var trainName = snapshot.val().name;
